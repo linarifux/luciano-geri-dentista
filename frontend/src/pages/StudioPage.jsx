@@ -203,7 +203,7 @@ const StudioPage = () => {
              {/* --- Interactive Google Map --- */}
              <div className="md:col-span-2 h-64 md:h-80 rounded-[2rem] overflow-hidden relative shadow-lg border border-gray-100">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2883.743642059379!2d10.3966557!3d43.7157158!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12d591a6c17d23e5%3A0x889851172352818!2sLungarno%20Pacinotti%2C%2026%2C%2056126%20Pisa%20PI!5e0!3m2!1sit!2sit!4v1700000000000!5m2!1sit!2sit" 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2883.757856463911!2d10.394654!3d43.715581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2443105f92ec734f%3A0x48e65ed3b9ffa943!2sStudio%20Dentistico%20Luciano%20Geri!5e0!3m2!1sen!2sbd!4v1768766412063!5m2!1sen!2sbd" 
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 

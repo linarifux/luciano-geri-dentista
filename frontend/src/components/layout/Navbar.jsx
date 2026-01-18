@@ -64,7 +64,7 @@ const Navbar = () => {
           {/* Right: Social & Map */}
           <div className="flex items-center gap-6">
             <a 
-              href="https://goo.gl/maps/placeholder" 
+              href="https://maps.app.goo.gl/zbHjLv8bqdSBEBR29" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="flex items-center gap-2 hover:text-primary transition-colors group"
