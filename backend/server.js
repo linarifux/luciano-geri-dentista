@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Security & Parsing
 app.use(cors({
-  origin: 'http://localhost:5173', // Your Vite frontend URL
+  origin: ['http://localhost:5173', 'https://luciano-geri-dentista.netlify.app', 'https://luciano-geri-dentista.vercel.app'], // Your Vite frontend URL
   credentials: true // Allow cookies to be sent
 }));
 app.use(express.json());
