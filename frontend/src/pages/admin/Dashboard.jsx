@@ -32,27 +32,35 @@ const Dashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50/50 p-6 lg:p-10">
+    // Changed padding for mobile to be smaller (p-4) vs desktop (p-10)
+    // Added overflow-x-hidden to prevent horizontal scrolling on mobile
+    <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 lg:p-10 overflow-x-hidden">
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="max-w-7xl mx-auto space-y-8"
+        className="max-w-7xl mx-auto space-y-6 md:space-y-8"
       >
         {/* --- 1. Top Bar: Search & Profile --- */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div>
-            <h1 className="text-3xl font-black text-dark tracking-tight">
-              Dashboard
-            </h1>
-            <p className="text-gray-400 text-sm font-medium capitalize mt-1">
-              {currentDate}
-            </p>
+        <header className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
+          <div className="w-full xl:w-auto flex justify-between items-end">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-black text-dark tracking-tight">
+                Dashboard
+              </h1>
+              <p className="text-gray-400 text-xs md:text-sm font-medium capitalize mt-1">
+                {currentDate}
+              </p>
+            </div>
+            {/* Mobile Profile Icon (Visible only on small screens) */}
+            <div className="xl:hidden w-10 h-10 rounded-xl bg-primary flex items-center justify-center font-bold text-white shadow-inner">
+               {userInfo?.name?.charAt(0)}
+            </div>
           </div>
           
-          <div className="flex items-center gap-4 w-full md:w-auto">
-            {/* Search Bar */}
-            <div className="relative flex-1 md:w-64">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
+            {/* Search Bar - Full width on mobile */}
+            <div className="relative w-full sm:flex-1 xl:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input 
                 type="text" 
@@ -61,76 +69,84 @@ const Dashboard = () => {
               />
             </div>
 
-            {/* Notifications */}
-            <button className="relative p-3 bg-white rounded-2xl shadow-sm hover:bg-gray-50 transition-colors text-gray-500 hover:text-primary">
-              <Bell size={20} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                {/* Notifications */}
+                <button className="relative p-3 bg-white rounded-2xl shadow-sm hover:bg-gray-50 transition-colors text-gray-500 hover:text-primary">
+                <Bell size={20} />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
 
-            {/* Profile Pill */}
-            <div className="flex items-center gap-3 bg-dark text-white p-2 pr-4 rounded-2xl shadow-lg shadow-dark/10">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center font-bold text-white shadow-inner">
-                {userInfo?.name?.charAt(0)}
-              </div>
-              <div className="hidden sm:flex flex-col">
-                <span className="text-xs font-bold leading-tight">{userInfo?.name}</span>
-                <span className="text-[10px] text-gray-400 uppercase tracking-wider">
-                  {userInfo?.role === 'admin' ? 'Admin' : 'Staff'}
-                </span>
-              </div>
+                {/* Profile Pill - Desktop Only */}
+                <div className="hidden xl:flex items-center gap-3 bg-dark text-white p-2 pr-4 rounded-2xl shadow-lg shadow-dark/10">
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center font-bold text-white shadow-inner">
+                    {userInfo?.name?.charAt(0)}
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-xs font-bold leading-tight">{userInfo?.name}</span>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                    {userInfo?.role === 'admin' ? 'Admin' : 'Staff'}
+                    </span>
+                </div>
+                </div>
             </div>
           </div>
         </header>
 
-        {/* --- 2. Stats Grid (Existing Component) --- */}
-        <section>
+        {/* --- 2. Stats Grid --- */}
+        <section className="w-full overflow-x-auto pb-2 md:pb-0">
            <StatsGrid />
         </section>
 
         {/* --- 3. Main Layout Grid --- */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* LEFT COLUMN: Main Appointments Table (2/3 width) */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* LEFT COLUMN: Main Appointments Table (2/3 width on desktop, full on mobile) */}
+          <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
             
             {/* Table Header & Filters */}
-            <div className="bg-white p-2 rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-wrap gap-2">
-              {['today', 'pending', 'all'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all ${
-                    activeTab === tab 
-                      ? 'bg-dark text-white shadow-md' 
-                      : 'text-gray-400 hover:bg-gray-50'
-                  }`}
-                >
-                  {tab === 'today' && 'Oggi'}
-                  {tab === 'pending' && 'Richieste'}
-                  {tab === 'all' && 'Tutti'}
-                </button>
-              ))}
-              <div className="flex-grow"></div>
-              <button className="p-3 text-gray-400 hover:text-dark hover:bg-gray-50 rounded-xl transition-colors">
-                <Filter size={18} />
-              </button>
-              <button className="p-3 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-colors">
-                <Download size={18} />
-              </button>
+            <div className="bg-white p-2 rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-wrap gap-2 items-center justify-between sm:justify-start">
+              <div className="flex gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
+                  {['today', 'pending', 'all'].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`flex-shrink-0 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${
+                        activeTab === tab 
+                          ? 'bg-dark text-white shadow-md' 
+                          : 'text-gray-400 hover:bg-gray-50'
+                      }`}
+                    >
+                      {tab === 'today' && 'Oggi'}
+                      {tab === 'pending' && 'Richieste'}
+                      {tab === 'all' && 'Tutti'}
+                    </button>
+                  ))}
+              </div>
+              
+              <div className="flex gap-2 ml-auto mt-2 sm:mt-0">
+                  <button className="p-3 text-gray-400 hover:text-dark hover:bg-gray-50 rounded-xl transition-colors">
+                    <Filter size={18} />
+                  </button>
+                  <button className="p-3 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-colors">
+                    <Download size={18} />
+                  </button>
+              </div>
             </div>
 
-            {/* The Table Component Wrapper */}
+            {/* The Table Component Wrapper - Allow horizontal scroll on mobile */}
             <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden min-h-[400px]">
-              <AppointmentTable filter={activeTab} />
+              <div className="overflow-x-auto">
+                 <AppointmentTable filter={activeTab} />
+              </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Widgets & Quick Actions (1/3 width) */}
-          <div className="space-y-8">
+          {/* RIGHT COLUMN: Widgets & Quick Actions (1/3 width, stacks on top on mobile) */}
+          <div className="space-y-6 md:space-y-8 order-1 lg:order-2">
             
             {/* Widget: Next Patient */}
             <div className="bg-primary/5 p-6 rounded-[2rem] border border-primary/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                 <Clock size={100} />
               </div>
               <h3 className="text-primary font-black uppercase tracking-widest text-xs mb-4">Prossimo Paziente</h3>
@@ -155,7 +171,7 @@ const Dashboard = () => {
               </button>
             </div>
 
-            {/* Widget: Quick Actions */}
+            {/* Widget: Quick Actions - 2 cols on mobile, 2 cols on desktop */}
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
               <h3 className="font-bold text-dark mb-4">Azioni Rapide</h3>
               <div className="grid grid-cols-2 gap-3">
@@ -167,7 +183,7 @@ const Dashboard = () => {
             </div>
 
             {/* Widget: Recent Activity Log */}
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hidden md:block">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-dark">Attività Recenti</h3>
                 <button className="text-primary hover:underline text-xs font-bold">Vedi tutte</button>
@@ -198,7 +214,7 @@ const Dashboard = () => {
 const ActionButton = ({ icon, label }) => (
   <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-primary/5 hover:text-primary transition-all group">
     <div className="text-gray-400 group-hover:text-primary transition-colors">{icon}</div>
-    <span className="text-xs font-bold text-gray-500 group-hover:text-primary">{label}</span>
+    <span className="text-xs font-bold text-gray-500 group-hover:text-primary text-center leading-tight">{label}</span>
   </button>
 );
 

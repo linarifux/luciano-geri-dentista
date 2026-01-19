@@ -42,86 +42,140 @@ const BlogTable = ({ data, onDelete }) => {
   }
 
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-gray-50/80 sticky top-0 z-10 backdrop-blur-sm border-b border-gray-100">
-          <tr>
-            <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Articolo</th>
-            <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Categoria</th>
-            <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Autore</th>
-            <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Data</th>
-            <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em] text-right">Azioni</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-50">
-          {sortedData.map((post) => (
-            <tr key={post._id} className="group hover:bg-gray-50/80 transition-all duration-200">
-              {/* 1. Title & Image */}
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
-                    <img src={post.image} alt="" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-dark text-sm leading-tight line-clamp-1 max-w-[200px]">{post.title}</div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                        <Clock size={10} /> {post.readTime}
-                      </span>
+    <>
+      {/* ---------------- MOBILE VIEW (CARDS) ---------------- */}
+      <div className="block md:hidden space-y-4 p-4">
+        {sortedData.map((post) => (
+            <div key={post._id} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+                {/* Image & Title */}
+                <div className="flex gap-4">
+                    <div className="w-20 h-20 rounded-xl bg-gray-100 shrink-0 overflow-hidden">
+                        <img src={post.image} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex flex-col justify-between">
+                        <div>
+                            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary/5 text-primary border border-primary/10 mb-2">
+                                <span className="text-[10px] font-bold uppercase tracking-wider">{post.category}</span>
+                            </div>
+                            <h4 className="font-bold text-dark text-sm leading-tight line-clamp-2">{post.title}</h4>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Metadata */}
+                <div className="bg-gray-50/50 rounded-xl p-3 grid grid-cols-2 gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-gray-500">
+                        <User size={14} className="text-primary"/> {post.author.split(' ')[0]}
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-500">
+                        <Clock size={14} className="text-primary"/> {post.readTime}
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-500 col-span-2">
+                        <Calendar size={14} className="text-primary"/> {format(new Date(post.createdAt), 'd MMM yyyy', { locale: it })}
+                    </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-2 pt-2 border-t border-gray-50">
+                    <Link 
+                        to={`/blog/${post._id}`}
+                        className="flex-1 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center gap-2 hover:bg-blue-100 transition-colors"
+                    >
+                        <ExternalLink size={14} /> Anteprima
+                    </Link>
+                    <button 
+                        onClick={() => onDelete(post._id)}
+                        className="flex-1 py-2.5 rounded-xl bg-rose-50 text-rose-600 font-bold text-xs flex items-center justify-center gap-2 hover:bg-rose-100 transition-colors"
+                    >
+                        <Trash2 size={14} /> Elimina
+                    </button>
+                </div>
+            </div>
+        ))}
+      </div>
+
+      {/* ---------------- DESKTOP VIEW (TABLE) ---------------- */}
+      <div className="hidden md:block w-full overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead className="bg-gray-50/80 sticky top-0 z-10 backdrop-blur-sm border-b border-gray-100">
+            <tr>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Articolo</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Categoria</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Autore</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Data</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em] text-right">Azioni</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {sortedData.map((post) => (
+              <tr key={post._id} className="group hover:bg-gray-50/80 transition-all duration-200">
+                {/* 1. Title & Image */}
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
+                      <img src={post.image} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-dark text-sm leading-tight line-clamp-1 max-w-[200px]">{post.title}</div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                          <Clock size={10} /> {post.readTime}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
+                </td>
 
-              {/* 2. Category */}
-              <td className="px-6 py-4">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/5 text-primary border border-primary/10">
-                  <Tag size={10} />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">{post.category}</span>
-                </div>
-              </td>
+                {/* 2. Category */}
+                <td className="px-6 py-4">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/5 text-primary border border-primary/10">
+                    <Tag size={10} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{post.category}</span>
+                  </div>
+                </td>
 
-              {/* 3. Author */}
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600 font-medium">
-                   <User size={14} className="text-gray-400" />
-                   {post.author}
-                </div>
-              </td>
+                {/* 3. Author */}
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2 text-sm text-gray-600 font-medium">
+                     <User size={14} className="text-gray-400" />
+                     {post.author}
+                  </div>
+                </td>
 
-              {/* 4. Date */}
-              <td className="px-6 py-4">
-                <span className="text-xs font-bold text-gray-500 capitalize">
-                  {format(new Date(post.createdAt), 'd MMM yyyy', { locale: it })}
-                </span>
-              </td>
+                {/* 4. Date */}
+                <td className="px-6 py-4">
+                  <span className="text-xs font-bold text-gray-500 capitalize">
+                    {format(new Date(post.createdAt), 'd MMM yyyy', { locale: it })}
+                  </span>
+                </td>
 
-              {/* 5. Actions */}
-              <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2">
-                  <Link 
-                    to={`/blog/${post._id}`} 
-                    target="_blank"
-                    className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
-                    title="Vedi anteprima"
-                  >
-                    <ExternalLink size={18} />
-                  </Link>
-                  
-                  <button 
-                    onClick={() => onDelete(post._id)}
-                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                    title="Elimina"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                {/* 5. Actions */}
+                <td className="px-6 py-4 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <Link 
+                      to={`/blog/${post._id}`} 
+                      target="_blank"
+                      className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
+                      title="Vedi anteprima"
+                    >
+                      <ExternalLink size={18} />
+                    </Link>
+                    
+                    <button 
+                      onClick={() => onDelete(post._id)}
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                      title="Elimina"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
+import { Instagram, Facebook, Linkedin, MapPin, Phone, Mail, Clock } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    // Rich Slate Navy Background
     <footer className="bg-[#0F172A] text-white pt-20 pb-10 border-t border-white/5 relative overflow-hidden">
       
       {/* Background Decor */}
@@ -26,25 +26,32 @@ const Footer = () => {
                 className="h-14 w-auto brightness-0 invert opacity-90 hover:opacity-100 transition-opacity" 
               />
             </Link>
-            <p className="text-slate-400 text-sm font-light leading-relaxed max-w-sm mx-auto lg:mx-0">
+            <p className="text-slate-400 text-sm font-light leading-relaxed max-w-sm mx-auto lg:mx-0 mb-8">
               Eccellenza odontoiatrica nel cuore storico di Pisa dal 1980. 
               Uniamo tradizione medica e tecnologie digitali per la cura del tuo sorriso.
             </p>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-4">
+              <SocialLink href="#" icon={<Instagram size={18} />} />
+              <SocialLink href="#" icon={<Facebook size={18} />} />
+              <SocialLink href="#" icon={<Linkedin size={18} />} />
+            </div>
           </div>
 
           {/* 2. Middle: Dual Column Menu Section (4 Columns) */}
           <div className="md:col-span-6 lg:col-span-4 lg:flex lg:justify-center">
-            {/* Added 'mx-auto md:mx-0 lg:mx-auto' to center block on mobile/desktop but left-align on tablet */}
             <div className="grid grid-cols-2 gap-8 w-full max-w-xs mx-auto md:mx-0 lg:mx-auto">
               
-              {/* Column A: General */}
+              {/* Column A: Explore */}
               <div>
-                <h4 className="text-primary font-black mb-6 uppercase tracking-[0.2em] text-[10px]">Menu</h4>
+                <h4 className="text-primary font-black mb-6 uppercase tracking-[0.2em] text-[10px]">Esplora</h4>
                 <ul className="space-y-4">
-                  <li><Link to="/" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Home</Link></li>
-                  <li><Link to="/studio" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Lo Studio</Link></li>
-                  <li><Link to="/prenota" className="text-sm font-bold text-white hover:text-primary transition-colors">Prenota Visita</Link></li>
-                  <li><Link to="/login" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Staff Login</Link></li>
+                  <FooterLink to="/" label="Home" />
+                  <FooterLink to="/chi-siamo" label="Chi Siamo" />
+                  <FooterLink to="/studio" label="Lo Studio" />
+                  <FooterLink to="/blog" label="News & Blog" />
+                  <FooterLink to="/prenota" label="Prenota Visita" highlight />
                 </ul>
               </div>
 
@@ -52,17 +59,17 @@ const Footer = () => {
               <div>
                 <h4 className="text-primary font-black mb-6 uppercase tracking-[0.2em] text-[10px]">Trattamenti</h4>
                 <ul className="space-y-4">
-                  <li><Link to="/servizi" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Igiene</Link></li>
-                  <li><Link to="/servizi" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Implantologia</Link></li>
-                  <li><Link to="/servizi" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Ortodonzia</Link></li>
-                  <li><Link to="/servizi" className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Estetica</Link></li>
+                  <FooterLink to="/servizi" label="Igiene e Prevenzione" />
+                  <FooterLink to="/servizi" label="Implantologia" />
+                  <FooterLink to="/servizi" label="Ortodonzia" />
+                  <FooterLink to="/servizi" label="Estetica Dentale" />
+                  <FooterLink to="/login" label="Area Staff" />
                 </ul>
               </div>
             </div>
           </div>
 
           {/* 3. Right: Contacts & Hours (4 Columns Combined) */}
-          {/* Added 'max-w-xs mx-auto md:max-w-none md:mx-0' to center block on mobile */}
           <div className="md:col-span-6 lg:col-span-4 grid grid-cols-2 gap-8 max-w-xs mx-auto md:max-w-none md:mx-0 w-full">
             
             {/* Contacts */}
@@ -70,13 +77,25 @@ const Footer = () => {
               <h4 className="text-primary font-black mb-6 uppercase tracking-[0.2em] text-[10px]">Contatti</h4>
               <ul className="space-y-6">
                 <li>
-                  <div className="text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">Sede</div>
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+                    <MapPin size={12} /> Sede
+                  </div>
                   <div className="text-sm font-medium text-slate-300">Lungarno Pacinotti, 26 <br/> 56125 Pisa (PI)</div>
                 </li>
                 <li>
-                  <div className="text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">Telefono</div>
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+                    <Phone size={12} /> Telefono
+                  </div>
                   <a href="tel:+39050123456" className="text-sm font-medium text-white hover:text-primary transition-colors">
                     +39 050 123456
+                  </a>
+                </li>
+                <li>
+                   <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+                    <Mail size={12} /> Email
+                  </div>
+                  <a href="mailto:info@studiogeri.it" className="text-sm font-medium text-white hover:text-primary transition-colors">
+                    info@studiogeri.it
                   </a>
                 </li>
               </ul>
@@ -116,5 +135,31 @@ const Footer = () => {
     </footer>
   );
 };
+
+// --- Helper Components ---
+
+const FooterLink = ({ to, label, highlight }) => (
+  <li>
+    <Link 
+      to={to} 
+      className={`text-sm font-bold transition-colors ${
+        highlight ? 'text-white hover:text-primary' : 'text-slate-400 hover:text-white'
+      }`}
+    >
+      {label}
+    </Link>
+  </li>
+);
+
+const SocialLink = ({ href, icon }) => (
+  <a 
+    href={href} 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all duration-300"
+  >
+    {icon}
+  </a>
+);
 
 export default Footer;
