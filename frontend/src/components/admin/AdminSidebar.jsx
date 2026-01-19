@@ -1,6 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { motion } from 'framer-motion';
 import { logout } from '../../store/slices/authSlice';
 import { 
   LayoutDashboard, 
@@ -8,7 +7,8 @@ import {
   Users, 
   Stethoscope, 
   LogOut,
-  ChevronRight
+  ChevronRight,
+  FileText // Added icon for Blog
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -25,6 +25,7 @@ const AdminSidebar = () => {
     { name: 'Appuntamenti', icon: <CalendarCheck size={20} />, path: '/admin/appointments' },
     { name: 'Pazienti', icon: <Users size={20} />, path: '/admin/patients' },
     { name: 'Prestazioni', icon: <Stethoscope size={20} />, path: '/admin/services' },
+    { name: 'Blog & News', icon: <FileText size={20} />, path: '/admin/blogs' }, // NEW LINK
   ];
 
   return (

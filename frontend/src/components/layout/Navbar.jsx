@@ -14,7 +14,6 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Increased threshold slightly to prevent jitter at very top
       setScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
@@ -31,14 +30,9 @@ const Navbar = () => {
   };
 
   return (
-    // Changed 'sticky' to 'fixed' to prevent layout shift of content below it
-    // Added 'h-auto' to let it sit on top of content
     <header className="fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300">
       
       {/* --- 1. Top Bar (Desktop Only) --- */}
-      {/* We hide this on scroll to save space, OR keep it. 
-          If you want it to disappear on scroll, we need AnimatePresence. 
-          For stability, let's keep it but ensure the main nav has a background. */}
       <div 
         className={`bg-[#0F172A] text-white overflow-hidden transition-all duration-300 ease-in-out ${
           scrolled ? 'h-0 py-0 opacity-0' : 'h-10 py-2.5 opacity-100'
@@ -74,8 +68,8 @@ const Navbar = () => {
             </a>
             <div className="h-3 w-px bg-white/20"></div>
             <div className="flex items-center gap-4">
-              <a href="#" className="hover:text-primary transition-colors"><Facebook size={16} /></a>
-              <a href="#" className="hover:text-primary transition-colors"><Instagram size={16} /></a>
+              <a href="https://www.facebook.com/profile.php?id=61556026762166" className="hover:text-primary transition-colors" target='blank'><Facebook size={16} /></a>
+              <a href="https://www.instagram.com/studiodentisticolucianogeri/" className="hover:text-primary transition-colors" target='blank'><Instagram size={16} /></a>
             </div>
           </div>
         </div>
@@ -98,10 +92,9 @@ const Navbar = () => {
 
               <Link to="/" className="flex flex-col items-center group mx-auto md:mx-0 md:w-full md:items-center">
                  <img 
-                    src="/logo.png" 
-                    alt="Studio Geri" 
-                    // Fixed height logic to prevent layout thrashing
-                    className={`transition-all duration-300 w-auto ${scrolled ? 'h-10' : 'h-12 md:h-16'}`}
+                   src="/logo.png" 
+                   alt="Studio Geri" 
+                   className={`transition-all duration-300 w-auto ${scrolled ? 'h-10' : 'h-12 md:h-16'}`}
                  />
               </Link>
 
@@ -116,7 +109,9 @@ const Navbar = () => {
             {/* Lower Row: Desktop Links */}
             <div className={`hidden md:flex justify-center items-center space-x-12 uppercase text-[12px] font-bold tracking-[0.15em] overflow-hidden transition-all duration-300 ${scrolled ? 'pt-1' : 'pt-2'}`}>
               <NavLink to="/">Home</NavLink>
+              <NavLink to="/chi-siamo">Chi Siamo</NavLink>
               <NavLink to="/servizi">Prestazioni</NavLink>
+              <NavLink to="/blog">News</NavLink> {/* ADDED BLOG LINK */}
               <NavLink to="/studio">Lo Studio</NavLink>
               <NavLink to="/login" className="italic text-gray-400">Area Staff</NavLink>
               
@@ -144,7 +139,9 @@ const Navbar = () => {
           >
             <div className="px-6 py-8 flex flex-col items-center space-y-6 text-center">
               <MobileNavLink to="/" onClick={() => setIsOpen(false)}>Home</MobileNavLink>
+              <MobileNavLink to="/chi-siamo" onClick={() => setIsOpen(false)}>Chi Siamo</MobileNavLink>
               <MobileNavLink to="/servizi" onClick={() => setIsOpen(false)}>Prestazioni</MobileNavLink>
+              <MobileNavLink to="/blog" onClick={() => setIsOpen(false)}>News</MobileNavLink> {/* ADDED BLOG LINK */}
               <MobileNavLink to="/studio" onClick={() => setIsOpen(false)}>Lo Studio</MobileNavLink>
               <MobileNavLink to="/login" onClick={() => setIsOpen(false)}>Area Staff</MobileNavLink>
               

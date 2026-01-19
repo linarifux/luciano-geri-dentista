@@ -11,6 +11,7 @@ import { errorHandler } from './middleware/errorMiddleware.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -39,6 +40,7 @@ app.get('/', (req, res) => {
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Custom Error Middleware 
 app.use(errorHandler);

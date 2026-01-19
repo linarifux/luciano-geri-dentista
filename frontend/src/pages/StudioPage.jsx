@@ -138,54 +138,6 @@ const StudioPage = () => {
           </div>
         </section>
 
-        {/* --- The Team Section --- */}
-        <section className="mb-32">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div>
-              <span className="text-primary font-black uppercase tracking-[0.4em] text-[10px] mb-4 block">
-                Lo Staff Medico
-              </span>
-              <h2 className="text-4xl md:text-5xl font-black text-dark tracking-tighter">
-                I professionisti del <br /> tuo sorriso.
-              </h2>
-            </div>
-            <p className="text-gray-500 max-w-sm text-right leading-relaxed font-light hidden md:block">
-              Un team multidisciplinare in continuo aggiornamento per offrirti cure complete a 360 gradi.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-10">
-            {teamMembers.map((member, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group"
-              >
-                <div className="relative mb-6 overflow-hidden rounded-[2rem] aspect-[3/4]">
-                  <img 
-                    src={member.image} 
-                    alt={member.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent opacity-60"></div>
-                  
-                  {/* Name Overlay */}
-                  <div className="absolute bottom-6 left-6 text-white">
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary-light mb-1">{member.role}</p>
-                    <h3 className="text-2xl font-black">{member.name}</h3>
-                  </div>
-                </div>
-                <p className="text-gray-500 leading-relaxed font-light text-sm pl-2 border-l-2 border-primary/20">
-                  {member.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
         {/* --- Gallery & Map Section --- */}
         <section className="mb-32">
            <h2 className="text-3xl font-black text-dark mb-10 text-center">I nostri spazi</h2>
