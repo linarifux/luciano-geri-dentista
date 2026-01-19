@@ -33,7 +33,7 @@ app.use(cookieParser()); // Parses cookies for auth
 
 // index route
 app.get('/', (req, res) => {
-  res.send('API is Running...')
+  res.send('API is Running......')
 })
 
 // API Routes

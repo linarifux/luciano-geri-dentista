@@ -1,4 +1,4 @@
-# *** Studio Geri - Dental Clinic Platform
+# Studio Geri - Dental Clinic Platform
 
 A high-end, cinematic web application for a prestigious dental clinic. This project combines a stunning, animation-heavy public-facing website with a robust, secure internal dashboard for staff management.
 
