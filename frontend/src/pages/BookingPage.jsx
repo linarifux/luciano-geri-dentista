@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import BookingForm from '../components/home/BookingForm';
+import BookingForm from '../components/home/BookingForm'; // Ensure this path matches your structure
 import { ShieldCheck, Clock, Phone, ArrowLeft, Star, MapPin } from 'lucide-react';
 
 const BookingPage = () => {
@@ -53,7 +53,7 @@ const BookingPage = () => {
               </p>
             </motion.div>
 
-            {/* 2. Trust Indicators (Styled as a clean list) */}
+            {/* 2. Trust Indicators */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -99,17 +99,17 @@ const BookingPage = () => {
 
           </div>
 
-          {/* --- RIGHT COLUMN: The Form (Immediate Visibility) --- */}
+          {/* --- RIGHT COLUMN: The Form --- */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
             className="lg:col-span-7 relative"
           >
-            {/* Decorative Glow behind form */}
-            <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent blur-3xl rounded-[3rem] -z-10"></div>
+            {/* Decorative Glow */}
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent blur-3xl rounded-[3rem] -z-10"></div>
             
-            {/* The Form Component */}
+            {/* Component */}
             <BookingForm />
             
             <p className="text-center text-xs text-gray-400 mt-6 max-w-md mx-auto">

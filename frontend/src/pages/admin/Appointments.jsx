@@ -3,25 +3,53 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { fetchAppointments } from '../../store/slices/appointmentSlice';
 import AppointmentTable from '../../components/admin/AppointmentTable';
+import EditAppointmentModal from '../../components/admin/EditAppointmentModal';
 import { Search, Filter, Calendar as CalendarIcon, Download } from 'lucide-react';
+import API from '../../services/api'; // Ensure API is imported
+import toast from 'react-hot-toast'; // For notifications
 
 const Appointments = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((state) => state.appointments);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('Tutti');
+  const [statusFilter, setStatusFilter] = useState('All');
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
     dispatch(fetchAppointments());
   }, [dispatch]);
 
-  // Filtering Logic
   const filteredItems = items.filter((appt) => {
     const matchesSearch = appt.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           appt.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'Tutti' || appt.status === statusFilter;
+    const matchesStatus = statusFilter === 'All' || appt.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const handleEditClick = (appointment) => {
+    setSelectedAppointment(appointment);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateSuccess = () => {
+    dispatch(fetchAppointments());
+  };
+
+  // --- DELETE HANDLER ---
+  const handleDeleteClick = async (id) => {
+    if (window.confirm('Sei sicuro di voler eliminare questo appuntamento? Questa azione non può essere annullata.')) {
+      try {
+        await API.delete(`/appointments/${id}`);
+        toast.success('Appuntamento eliminato con successo');
+        dispatch(fetchAppointments()); // Refresh list
+      } catch (error) {
+        console.error("Error deleting appointment:", error);
+        toast.error('Errore durante l\'eliminazione');
+      }
+    }
+  };
 
   return (
     <motion.div 
@@ -29,7 +57,7 @@ const Appointments = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-dark">Registro Appuntamenti</h1>
@@ -46,7 +74,7 @@ const Appointments = () => {
         </div>
       </div>
 
-      {/* Filters Bar */}
+      {/* Filters */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -65,15 +93,16 @@ const Appointments = () => {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="Tutti">Tutti gli stati</option>
-            <option value="In attesa">In attesa</option>
-            <option value="Confermato">Confermati</option>
-            <option value="Annullato">Annullati</option>
+            <option value="All">Tutti gli stati</option>
+            <option value="Pending">In Attesa</option>
+            <option value="Confirmed">Confermati</option>
+            <option value="Completed">Completati</option>
+            <option value="Cancelled">Annullati</option>
           </select>
         </div>
       </div>
 
-      {/* Results Section */}
+      {/* Table */}
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="py-20 text-center flex flex-col items-center">
@@ -81,14 +110,25 @@ const Appointments = () => {
             <p className="text-gray-400 font-medium">Caricamento appuntamenti...</p>
           </div>
         ) : (
-          <AppointmentTable data={filteredItems} /> 
+          <AppointmentTable 
+            data={filteredItems} 
+            onEdit={handleEditClick} 
+            onDelete={handleDeleteClick} // Pass the delete handler
+          /> 
         )}
       </div>
 
-      {/* Counter Summary */}
       <div className="flex justify-end text-xs text-gray-400 font-medium px-4">
         Mostrando {filteredItems.length} di {items.length} richieste totali
       </div>
+
+      {/* Modal */}
+      <EditAppointmentModal 
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        appointment={selectedAppointment}
+        onUpdateSuccess={handleUpdateSuccess}
+      />
     </motion.div>
   );
 };
