@@ -4,34 +4,29 @@ import {
   registerUser,
   logoutUser,
   getUserProfile,
+  updateUserProfile,
+  getUsers,
+  getDoctors, // Import
+  deleteUser,
+  getUserById,
+  updateUser,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// --- Public Routes ---
-// @desc    Auth user & get token
-// @route   POST /api/users/login
-router.post('/login', authUser);
-
-// @desc    Logout user / clear cookie
-// @route   POST /api/users/logout
+router.route('/').post(registerUser).get(protect, admin, getUsers);
 router.post('/logout', logoutUser);
+router.post('/login', authUser);
+router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
 
-// --- Private Routes (Logged in users) ---
-// @desc    Get user profile
-// @route   GET /api/users/profile
-router
-  .route('/profile')
-  .get(protect, getUserProfile);
-  // You can add .put(protect, updateUserProfile) here if you implement it later
+// New Route for fetching doctors (Public for booking, or Protect if you prefer)
+router.get('/doctors', getDoctors); 
 
-// --- Admin Routes ---
-// @desc    Register a new user (Staff creation)
-// @route   POST /api/users/register
-// @access  Private/Admin (Only admins can create new accounts)
 router
-  .route('/register')
-  .post(protect, admin, registerUser);
+  .route('/:id')
+  .delete(protect, admin, deleteUser)
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser);
 
 export default router;

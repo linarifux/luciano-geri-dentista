@@ -9,8 +9,9 @@ import {
   Search, Bell, Plus, UserPlus, FileText, 
   Clock, Settings, Filter, Download
 } from 'lucide-react';
-import { format, isAfter, setHours, setMinutes, parseISO } from 'date-fns';
+import { format, isAfter, setHours, setMinutes } from 'date-fns';
 import { it } from 'date-fns/locale';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -25,11 +26,11 @@ const Dashboard = () => {
     dispatch(fetchAppointments());
   }, [dispatch]);
 
-  // --- 1. FILTERING LOGIC (Search + Tab handled by Table) ---
+  // --- 1. FILTERING LOGIC (Search) ---
+  // Filters data BEFORE passing it to the Table (which handles the Tab filtering)
   const filteredData = useMemo(() => {
     if (!appointments) return [];
     
-    // First apply Search
     return appointments.filter(appt => {
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -40,26 +41,24 @@ const Dashboard = () => {
     });
   }, [appointments, searchTerm]);
 
-  // --- 2. NEXT PATIENT LOGIC ---
+  // --- 2. NEXT PATIENT WIDGET LOGIC ---
   const nextPatient = useMemo(() => {
     if (!appointments) return null;
     
     const now = new Date();
     
-    // Filter for future appointments that are not cancelled
+    // Find upcoming appointments (today or future) that are not cancelled
     const upcoming = appointments.filter(appt => {
       if (appt.status === 'Cancelled' || !appt.date || !appt.time) return false;
       
       const apptDate = new Date(appt.date);
       const [hours, minutes] = appt.time.split(':').map(Number);
-      
-      // Set specific time on the date object
       const apptDateTime = setMinutes(setHours(apptDate, hours), minutes);
       
       return isAfter(apptDateTime, now);
     });
 
-    // Sort by nearest date
+    // Sort by nearest date/time
     upcoming.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
@@ -73,8 +72,8 @@ const Dashboard = () => {
   // --- 3. RECENT ACTIVITY LOGIC ---
   const recentActivity = useMemo(() => {
     if (!appointments) return [];
-    // Assuming new appointments are added to the end or have a createdAt field
-    // We'll reverse to show newest first, taking top 3
+    // Sort by createdAt (newest first) and take top 3
+    // Fallback to 'date' if 'createdAt' is missing
     return [...appointments]
         .sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date))
         .slice(0, 3);
@@ -125,7 +124,6 @@ const Dashboard = () => {
             <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button className="relative p-3 bg-white rounded-2xl shadow-sm hover:bg-gray-50 transition-colors text-gray-500 hover:text-primary">
                   <Bell size={20} />
-                  {/* Show dot if there are pending appointments */}
                   {appointments.some(a => a.status === 'Pending') && (
                     <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                   )}
@@ -190,6 +188,7 @@ const Dashboard = () => {
             {/* Table Wrapper */}
             <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden min-h-[400px]">
               <div className="overflow-x-auto">
+                 {/* Pass filteredData so the table renders the search results */}
                  <AppointmentTable filter={activeTab} data={filteredData} />
               </div>
             </div>
@@ -213,20 +212,20 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <div className="text-2xl font-black text-dark">{nextPatient.time}</div>
-                      <div className="text-sm font-medium text-gray-600">{nextPatient.name}</div>
+                      <div className="text-sm font-medium text-gray-600 truncate max-w-[150px]">{nextPatient.name}</div>
                     </div>
                   </div>
                   
                   <div className="bg-white/60 rounded-xl p-3 mb-6">
                     <div className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Trattamento</div>
-                    <div className="text-dark font-bold text-sm">{nextPatient.service}</div>
+                    <div className="text-dark font-bold text-sm truncate">{nextPatient.service}</div>
                   </div>
 
                   <button 
                     onClick={() => navigate('/admin/appointments')}
                     className="w-full bg-primary hover:bg-dark text-white py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-primary/20"
                   >
-                    Vedi Cartella
+                    Vedi Calendario
                   </button>
                 </>
               ) : (
@@ -242,8 +241,8 @@ const Dashboard = () => {
               <div className="grid grid-cols-2 gap-3">
                 <ActionButton icon={<Plus size={18} />} label="Nuovo Appunt." onClick={() => navigate('/admin/appointments')} />
                 <ActionButton icon={<UserPlus size={18} />} label="Paziente" onClick={() => navigate('/admin/patients')} />
-                <ActionButton icon={<FileText size={18} />} label="Fattura" onClick={() => {}} />
-                <ActionButton icon={<Settings size={18} />} label="Opzioni" onClick={() => {}} />
+                <ActionButton icon={<FileText size={18} />} label="Fattura" onClick={() => toast('Funzione Fatturazione in arrivo!')} />
+                <ActionButton icon={<Settings size={18} />} label="Opzioni" onClick={() => toast('Impostazioni in arrivo!')} />
               </div>
             </div>
 
@@ -258,7 +257,7 @@ const Dashboard = () => {
                     <div className="w-2 h-2 rounded-full bg-secondary mt-1.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-gray-600 leading-relaxed">
-                        <span className="font-bold text-dark">{appt.name}</span> ha prenotato una visita: {appt.service}.
+                        <span className="font-bold text-dark">{appt.name}</span> ha prenotato: {appt.service}.
                       </p>
                       <span className="text-[10px] text-gray-400 capitalize">
                         {format(new Date(appt.createdAt || appt.date), 'd MMM HH:mm', { locale: it })}

@@ -3,15 +3,14 @@ import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
 
 // @desc    Auth user & get token
-// @route   POST /api/users/login
+// @route   POST /api/users/auth
 // @access  Public
-export const authUser = asyncHandler(async (req, res) => {
+const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
-    // This utility sets the HTTP-only cookie
     generateToken(res, user._id);
 
     res.json({
@@ -26,10 +25,10 @@ export const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Register new staff member
-// @route   POST /api/users/register
+// @desc    Register a new user
+// @route   POST /api/users
 // @access  Private/Admin
-export const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, role } = req.body;
 
   const userExists = await User.findOne({ email });
@@ -39,17 +38,14 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new Error('Utente già esistente');
   }
 
-  // Create user with the specific role passed (e.g., 'admin' or 'staff')
   const user = await User.create({
     name,
     email,
     password,
-    role: role || 'staff', // Default to staff if no role provided
+    role: role || 'staff', // Default to staff
   });
 
   if (user) {
-    // Note: We do NOT generate a token here because the admin is creating the user, 
-    // we don't want to log the admin out or log the new user in automatically.
     res.status(201).json({
       _id: user._id,
       name: user.name,
@@ -65,20 +61,18 @@ export const registerUser = asyncHandler(async (req, res) => {
 // @desc    Logout user / clear cookie
 // @route   POST /api/users/logout
 // @access  Private
-export const logoutUser = (req, res) => {
+const logoutUser = (req, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
-    expires: new Date(0), // Set expiration to the past to clear it
+    expires: new Date(0),
   });
-
-  res.status(200).json({ message: 'Logged out correttamente' });
+  res.status(200).json({ message: 'Logged out successfully' });
 };
 
 // @desc    Get current user profile
 // @route   GET /api/users/profile
 // @access  Private
-export const getUserProfile = asyncHandler(async (req, res) => {
-  // req.user is set by the 'protect' middleware
+const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
@@ -93,3 +87,118 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     throw new Error('Utente non trovato');
   }
 });
+
+// @desc    Update user profile
+// @route   PUT /api/users/profile
+// @access  Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Utente non trovato');
+  }
+});
+
+// @desc    Get all doctors
+// @route   GET /api/users/doctors
+// @access  Public
+const getDoctors = asyncHandler(async (req, res) => {
+  const doctors = await User.find({ role: 'doctor' }).select('name _id email');
+  res.json(doctors);
+});
+
+// @desc    Get all users
+// @route   GET /api/users
+// @access  Private/Admin
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  Private/Admin
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    if (user.isAdmin) { // Prevent deleting super admins if you have that flag, or check role
+      res.status(400);
+      throw new Error('Non puoi eliminare un account Admin');
+    }
+    await user.deleteOne();
+    res.json({ message: 'Utente rimosso' });
+  } else {
+    res.status(404);
+    throw new Error('Utente non trovato');
+  }
+});
+
+// @desc    Get user by ID
+// @route   GET /api/users/:id
+// @access  Private/Admin
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select('-password');
+
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404);
+    throw new Error('Utente non trovato');
+  }
+});
+
+// @desc    Update user
+// @route   PUT /api/users/:id
+// @access  Private/Admin
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.role = req.body.role || user.role; // Allow Admin to change roles
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Utente non trovato');
+  }
+});
+
+export {
+  authUser,
+  registerUser,
+  logoutUser,
+  getUserProfile,
+  updateUserProfile,
+  getDoctors,
+  getUsers,
+  deleteUser,
+  getUserById,
+  updateUser,
+};

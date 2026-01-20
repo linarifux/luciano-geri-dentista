@@ -28,10 +28,11 @@ import SingleBlog from "./pages/SingleBlog";
 
 // Admin Pages
 import Dashboard from "./pages/admin/Dashboard";
+import DoctorDashboard from "./pages/admin/DoctorDashboard"; // IMPORTED NEW PAGE
 import PatientCRM from "./pages/admin/PatientCRM";
 import ServiceManagement from "./pages/admin/ServiceManagement";
 import Appointments from "./pages/admin/Appointments";
-import AdminBlogs from "./pages/admin/AdminBlogs"; // IMPORTED NEW PAGE
+import AdminBlogs from "./pages/admin/AdminBlogs";
 
 // --- Utility: Reset Scroll on Route Change ---
 const ScrollToTopOnNavigate = () => {
@@ -105,11 +106,10 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/doctor-dashboard" element={<DoctorDashboard />} /> {/* NEW ROUTE */}
             <Route path="/admin/appointments" element={<Appointments />} />
             <Route path="/admin/patients" element={<PatientCRM />} />
             <Route path="/admin/services" element={<ServiceManagement />} />
-            
-            {/* Added Admin Blog Route */}
             <Route path="/admin/blogs" element={<AdminBlogs />} />
           </Route>
         </Route>
