@@ -21,9 +21,13 @@ const Appointments = () => {
     dispatch(fetchAppointments());
   }, [dispatch]);
 
+  // Updated Filter: Now searches in Name, Email, AND Doctor
   const filteredItems = items.filter((appt) => {
-    const matchesSearch = appt.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          appt.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const term = searchTerm.toLowerCase();
+    const matchesSearch = appt.name.toLowerCase().includes(term) || 
+                          appt.email.toLowerCase().includes(term) ||
+                          (appt.doctor && appt.doctor.toLowerCase().includes(term));
+                          
     const matchesStatus = statusFilter === 'All' || appt.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -38,7 +42,7 @@ const Appointments = () => {
   };
 
   const handleDeleteClick = async (id) => {
-    if (window.confirm('Sei sicuro di voler eliminare questo appuntamento? Questa azione non può essere annullata.')) {
+    if (window.confirm('Sei sicuro di voler eliminare questo appuntamento?')) {
       try {
         await API.delete(`/appointments/${id}`);
         toast.success('Appuntamento eliminato con successo');
@@ -54,9 +58,9 @@ const Appointments = () => {
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }}
-      className="space-y-6 p-4 md:p-8" // Added padding for better mobile spacing if not provided by layout
+      className="space-y-6 p-4 md:p-8"
     >
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-dark">Registro Appuntamenti</h1>
@@ -73,13 +77,13 @@ const Appointments = () => {
         </div>
       </div>
 
-      {/* Filters Bar */}
+      {/* Filters */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative w-full md:flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input 
             type="text"
-            placeholder="Cerca paziente o email..."
+            placeholder="Cerca paziente, email o dottore..."
             className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-white outline-none transition-all text-sm"
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -103,7 +107,7 @@ const Appointments = () => {
         </div>
       </div>
 
-      {/* Results Table */}
+      {/* Table */}
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="py-20 text-center flex flex-col items-center">
@@ -111,7 +115,6 @@ const Appointments = () => {
             <p className="text-gray-400 font-medium">Caricamento appuntamenti...</p>
           </div>
         ) : (
-          // Wrapper to allow horizontal scrolling on small screens
           <div className="overflow-x-auto">
             <AppointmentTable 
                 data={filteredItems} 
@@ -122,12 +125,10 @@ const Appointments = () => {
         )}
       </div>
 
-      {/* Counter Summary */}
       <div className="flex justify-end text-xs text-gray-400 font-medium px-4">
         Mostrando {filteredItems.length} di {items.length} richieste totali
       </div>
 
-      {/* Edit Modal */}
       <EditAppointmentModal 
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}

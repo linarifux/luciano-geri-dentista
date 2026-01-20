@@ -4,7 +4,7 @@ import { format, isSameDay } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { 
   Pencil, Trash2, Phone, CheckCircle2, 
-  XCircle, AlertCircle, Clock, Calendar, MoreVertical 
+  XCircle, AlertCircle, Clock, Calendar, Stethoscope 
 } from 'lucide-react';
 
 const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
@@ -102,7 +102,6 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
                     </span>
                   </div>
                 </div>
-                {/* Status Badge */}
                 <div className={`p-2 rounded-full border ${statusConfig.style}`}>
                    {statusConfig.icon}
                 </div>
@@ -124,10 +123,18 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
                        {appt.time || '--:--'}
                     </div>
                  </div>
-                 <div className="col-span-2">
+                 <div className="col-span-2 border-t border-gray-200 pt-2 mt-1">
                     <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Trattamento</span>
-                    <div className="text-sm font-semibold text-gray-700 mt-0.5">
+                    <div className="text-sm font-semibold text-gray-700 mt-0.5 flex justify-between items-center">
                        {appt.service}
+                    </div>
+                 </div>
+                 {/* Doctor Row for Mobile */}
+                 <div className="col-span-2">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Dottore</span>
+                    <div className="text-sm font-semibold text-gray-700 mt-0.5 flex items-center gap-1.5">
+                       <Stethoscope size={14} className="text-primary"/>
+                       {appt.doctor || <span className="text-gray-400 italic">Non assegnato</span>}
                     </div>
                  </div>
               </div>
@@ -159,6 +166,7 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
             <tr>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Paziente</th>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Trattamento</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Dottore</th> {/* NEW COLUMN */}
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Data & Ora</th>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Stato</th>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em] text-right">Opzioni</th>
@@ -188,6 +196,15 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
                     <span className="text-sm font-semibold text-gray-700">{appt.service}</span>
                     {appt.message && <div className="text-[10px] text-gray-400 mt-1 truncate max-w-[150px]">Note: {appt.message}</div>}
                   </td>
+                  {/* DOCTOR COLUMN */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                        <Stethoscope size={14} className="text-gray-300" />
+                        <span className="text-sm text-gray-600 font-medium">
+                            {appt.doctor ? appt.doctor.split(' ').slice(0, 2).join(' ') : 'N/A'}
+                        </span>
+                    </div>
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="text-sm font-bold text-dark flex items-center gap-2">
@@ -204,7 +221,6 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
                       <span className="text-[10px] font-bold uppercase tracking-wider">{statusConfig.label}</span>
                     </div>
                   </td>
-                  {/* ACTIONS COLUMN */}
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button 
@@ -214,7 +230,6 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
                       >
                         <Pencil size={18} />
                       </button>
-                      
                       <button 
                         onClick={() => onDelete(appt._id)} 
                         className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"

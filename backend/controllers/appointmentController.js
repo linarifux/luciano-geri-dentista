@@ -55,42 +55,29 @@ const getAvailableSlots = asyncHandler(async (req, res) => {
 // @route   POST /api/appointments
 // @access  Public
 const createAppointment = asyncHandler(async (req, res) => {
-  const { name, email, phone, service, date, time, message } = req.body;
+  // Destructure 'doctor' from body
+  const { name, email, phone, service, doctor, date, time, message } = req.body;
 
-  if (!date || !time) {
+  if (!name || !date || !time || !service) {
     res.status(400);
-    throw new Error('Data e orario sono obbligatori');
+    throw new Error('Compila tutti i campi obbligatori');
   }
 
-  // Check for Double Booking
-  const startOfDay = new Date(date);
-  startOfDay.setUTCHours(0,0,0,0);
-  const endOfDay = new Date(date);
-  endOfDay.setUTCHours(23,59,59,999);
-
-  const alreadyBooked = await Appointment.findOne({
-    date: { $gte: startOfDay, $lte: endOfDay },
-    time: time,
-    status: { $ne: 'Cancelled' }
+  const appointment = new Appointment({
+    name,
+    email,
+    phone,
+    service,
+    doctor, // Save doctor directly to DB
+    date,
+    time,
+    message,
+    status: 'Pending'
   });
 
-  if (alreadyBooked) {
-    res.status(400);
-    throw new Error(`Orario ${time} non disponibile. Per favore ricarica la pagina.`);
-  }
-
-  const appointment = await Appointment.create({
-    name, email, phone, service, date: new Date(date), time, message
-  });
-
-  if (appointment) {
-    res.status(201).json(appointment);
-  } else {
-    res.status(400);
-    throw new Error('Dati appuntamento non validi');
-  }
+  const createdAppointment = await appointment.save();
+  res.status(201).json(createdAppointment);
 });
-
 // @desc    Get all appointments
 // @route   GET /api/appointments
 // @access  Private/Admin
