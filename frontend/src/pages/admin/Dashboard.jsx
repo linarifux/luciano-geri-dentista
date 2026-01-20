@@ -1,39 +1,90 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { fetchAppointments } from '../../store/slices/appointmentSlice';
 import StatsGrid from '../../components/admin/StatsGrid';
 import AppointmentTable from '../../components/admin/AppointmentTable';
 import { 
-  Search, Bell, Calendar, Plus, 
-  UserPlus, FileText, Clock, ChevronRight, 
-  Settings, Filter, Download
+  Search, Bell, Plus, UserPlus, FileText, 
+  Clock, Settings, Filter, Download
 } from 'lucide-react';
+import { format, isAfter, setHours, setMinutes, parseISO } from 'date-fns';
+import { it } from 'date-fns/locale';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
+  const { items: appointments, loading } = useSelector((state) => state.appointments);
+  
   const [activeTab, setActiveTab] = useState('today');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     dispatch(fetchAppointments());
   }, [dispatch]);
 
-  // Mock data for the "Next Patient" widget (In real app, derive from appointments)
-  const nextPatient = {
-    name: "Giulia Bianchi",
-    time: "14:30",
-    treatment: "Igiene Professionale",
-    status: "Confirmed"
-  };
+  // --- 1. FILTERING LOGIC (Search + Tab handled by Table) ---
+  const filteredData = useMemo(() => {
+    if (!appointments) return [];
+    
+    // First apply Search
+    return appointments.filter(appt => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        appt.name.toLowerCase().includes(searchLower) ||
+        (appt.email && appt.email.toLowerCase().includes(searchLower)) ||
+        (appt.doctor && appt.doctor.toLowerCase().includes(searchLower))
+      );
+    });
+  }, [appointments, searchTerm]);
+
+  // --- 2. NEXT PATIENT LOGIC ---
+  const nextPatient = useMemo(() => {
+    if (!appointments) return null;
+    
+    const now = new Date();
+    
+    // Filter for future appointments that are not cancelled
+    const upcoming = appointments.filter(appt => {
+      if (appt.status === 'Cancelled' || !appt.date || !appt.time) return false;
+      
+      const apptDate = new Date(appt.date);
+      const [hours, minutes] = appt.time.split(':').map(Number);
+      
+      // Set specific time on the date object
+      const apptDateTime = setMinutes(setHours(apptDate, hours), minutes);
+      
+      return isAfter(apptDateTime, now);
+    });
+
+    // Sort by nearest date
+    upcoming.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA - dateB !== 0) return dateA - dateB;
+      return a.time.localeCompare(b.time);
+    });
+
+    return upcoming[0] || null;
+  }, [appointments]);
+
+  // --- 3. RECENT ACTIVITY LOGIC ---
+  const recentActivity = useMemo(() => {
+    if (!appointments) return [];
+    // Assuming new appointments are added to the end or have a createdAt field
+    // We'll reverse to show newest first, taking top 3
+    return [...appointments]
+        .sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date))
+        .slice(0, 3);
+  }, [appointments]);
 
   const currentDate = new Date().toLocaleDateString('it-IT', { 
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
   });
 
   return (
-    // Changed padding for mobile to be smaller (p-4) vs desktop (p-10)
-    // Added overflow-x-hidden to prevent horizontal scrolling on mobile
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 lg:p-10 overflow-x-hidden">
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
@@ -41,7 +92,7 @@ const Dashboard = () => {
         transition={{ duration: 0.4 }}
         className="max-w-7xl mx-auto space-y-6 md:space-y-8"
       >
-        {/* --- 1. Top Bar: Search & Profile --- */}
+        {/* --- Top Bar --- */}
         <header className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
           <div className="w-full xl:w-auto flex justify-between items-end">
             <div>
@@ -52,58 +103,61 @@ const Dashboard = () => {
                 {currentDate}
               </p>
             </div>
-            {/* Mobile Profile Icon (Visible only on small screens) */}
+            {/* Mobile Profile Icon */}
             <div className="xl:hidden w-10 h-10 rounded-xl bg-primary flex items-center justify-center font-bold text-white shadow-inner">
                {userInfo?.name?.charAt(0)}
             </div>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
-            {/* Search Bar - Full width on mobile */}
+            {/* Search Bar */}
             <div className="relative w-full sm:flex-1 xl:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input 
                 type="text" 
                 placeholder="Cerca paziente..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 rounded-2xl border-none bg-white shadow-sm focus:ring-2 focus:ring-primary/20 outline-none text-sm font-medium transition-all"
               />
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-                {/* Notifications */}
                 <button className="relative p-3 bg-white rounded-2xl shadow-sm hover:bg-gray-50 transition-colors text-gray-500 hover:text-primary">
-                <Bell size={20} />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                  <Bell size={20} />
+                  {/* Show dot if there are pending appointments */}
+                  {appointments.some(a => a.status === 'Pending') && (
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                  )}
                 </button>
 
-                {/* Profile Pill - Desktop Only */}
                 <div className="hidden xl:flex items-center gap-3 bg-dark text-white p-2 pr-4 rounded-2xl shadow-lg shadow-dark/10">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center font-bold text-white shadow-inner">
-                    {userInfo?.name?.charAt(0)}
-                </div>
-                <div className="flex flex-col">
-                    <span className="text-xs font-bold leading-tight">{userInfo?.name}</span>
-                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">
-                    {userInfo?.role === 'admin' ? 'Admin' : 'Staff'}
-                    </span>
-                </div>
+                  <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center font-bold text-white shadow-inner">
+                      {userInfo?.name?.charAt(0)}
+                  </div>
+                  <div className="flex flex-col">
+                      <span className="text-xs font-bold leading-tight">{userInfo?.name}</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                      {userInfo?.role === 'admin' ? 'Admin' : 'Staff'}
+                      </span>
+                  </div>
                 </div>
             </div>
           </div>
         </header>
 
-        {/* --- 2. Stats Grid --- */}
+        {/* --- Stats Grid --- */}
         <section className="w-full overflow-x-auto pb-2 md:pb-0">
            <StatsGrid />
         </section>
 
-        {/* --- 3. Main Layout Grid --- */}
+        {/* --- Main Content Grid --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* LEFT COLUMN: Main Appointments Table (2/3 width on desktop, full on mobile) */}
+          {/* LEFT COLUMN: Table */}
           <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
             
-            {/* Table Header & Filters */}
+            {/* Table Controls */}
             <div className="bg-white p-2 rounded-[1.5rem] shadow-sm border border-gray-100 flex flex-wrap gap-2 items-center justify-between sm:justify-start">
               <div className="flex gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
                   {['today', 'pending', 'all'].map((tab) => (
@@ -133,73 +187,88 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* The Table Component Wrapper - Allow horizontal scroll on mobile */}
+            {/* Table Wrapper */}
             <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden min-h-[400px]">
               <div className="overflow-x-auto">
-                 <AppointmentTable filter={activeTab} />
+                 <AppointmentTable filter={activeTab} data={filteredData} />
               </div>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Widgets & Quick Actions (1/3 width, stacks on top on mobile) */}
+          {/* RIGHT COLUMN: Widgets */}
           <div className="space-y-6 md:space-y-8 order-1 lg:order-2">
             
             {/* Widget: Next Patient */}
-            <div className="bg-primary/5 p-6 rounded-[2rem] border border-primary/10 relative overflow-hidden">
+            <div className="bg-primary/5 p-6 rounded-[2rem] border border-primary/10 relative overflow-hidden h-fit">
               <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                 <Clock size={100} />
               </div>
               <h3 className="text-primary font-black uppercase tracking-widest text-xs mb-4">Prossimo Paziente</h3>
               
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-xl font-bold text-dark">
-                  {nextPatient.name.charAt(0)}
-                </div>
-                <div>
-                  <div className="text-2xl font-black text-dark">{nextPatient.time}</div>
-                  <div className="text-sm font-medium text-gray-600">{nextPatient.name}</div>
-                </div>
-              </div>
-              
-              <div className="bg-white/60 rounded-xl p-3 mb-6">
-                <div className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Trattamento</div>
-                <div className="text-dark font-bold text-sm">{nextPatient.treatment}</div>
-              </div>
+              {nextPatient ? (
+                <>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-xl font-bold text-dark">
+                      {nextPatient.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="text-2xl font-black text-dark">{nextPatient.time}</div>
+                      <div className="text-sm font-medium text-gray-600">{nextPatient.name}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/60 rounded-xl p-3 mb-6">
+                    <div className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Trattamento</div>
+                    <div className="text-dark font-bold text-sm">{nextPatient.service}</div>
+                  </div>
 
-              <button className="w-full bg-primary hover:bg-dark text-white py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-primary/20">
-                Apri Cartella Clinica
-              </button>
+                  <button 
+                    onClick={() => navigate('/admin/appointments')}
+                    className="w-full bg-primary hover:bg-dark text-white py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-primary/20"
+                  >
+                    Vedi Cartella
+                  </button>
+                </>
+              ) : (
+                <div className="py-8 text-center text-gray-400">
+                  <p className="text-sm font-medium">Nessun appuntamento imminente.</p>
+                </div>
+              )}
             </div>
 
-            {/* Widget: Quick Actions - 2 cols on mobile, 2 cols on desktop */}
+            {/* Widget: Quick Actions */}
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
               <h3 className="font-bold text-dark mb-4">Azioni Rapide</h3>
               <div className="grid grid-cols-2 gap-3">
-                <ActionButton icon={<Plus size={18} />} label="Nuovo Appunt." />
-                <ActionButton icon={<UserPlus size={18} />} label="Paziente" />
-                <ActionButton icon={<FileText size={18} />} label="Fattura" />
-                <ActionButton icon={<Settings size={18} />} label="Opzioni" />
+                <ActionButton icon={<Plus size={18} />} label="Nuovo Appunt." onClick={() => navigate('/admin/appointments')} />
+                <ActionButton icon={<UserPlus size={18} />} label="Paziente" onClick={() => navigate('/admin/patients')} />
+                <ActionButton icon={<FileText size={18} />} label="Fattura" onClick={() => {}} />
+                <ActionButton icon={<Settings size={18} />} label="Opzioni" onClick={() => {}} />
               </div>
             </div>
 
-            {/* Widget: Recent Activity Log */}
+            {/* Widget: Recent Activity */}
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hidden md:block">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-dark">Attività Recenti</h3>
-                <button className="text-primary hover:underline text-xs font-bold">Vedi tutte</button>
               </div>
               <ul className="space-y-4">
-                {[1, 2, 3].map((_, i) => (
-                  <li key={i} className="flex gap-3 items-start">
+                {recentActivity.map((appt) => (
+                  <li key={appt._id} className="flex gap-3 items-start">
                     <div className="w-2 h-2 rounded-full bg-secondary mt-1.5 flex-shrink-0"></div>
                     <div>
                       <p className="text-xs text-gray-600 leading-relaxed">
-                        <span className="font-bold text-dark">Marco R.</span> ha prenotato una visita di controllo.
+                        <span className="font-bold text-dark">{appt.name}</span> ha prenotato una visita: {appt.service}.
                       </p>
-                      <span className="text-[10px] text-gray-400">10 min fa</span>
+                      <span className="text-[10px] text-gray-400 capitalize">
+                        {format(new Date(appt.createdAt || appt.date), 'd MMM HH:mm', { locale: it })}
+                      </span>
                     </div>
                   </li>
                 ))}
+                {recentActivity.length === 0 && (
+                    <li className="text-xs text-gray-400 italic">Nessuna attività recente.</li>
+                )}
               </ul>
             </div>
 
@@ -211,8 +280,11 @@ const Dashboard = () => {
 };
 
 // Helper Component for Buttons
-const ActionButton = ({ icon, label }) => (
-  <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-primary/5 hover:text-primary transition-all group">
+const ActionButton = ({ icon, label, onClick }) => (
+  <button 
+    onClick={onClick}
+    className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-primary/5 hover:text-primary transition-all group"
+  >
     <div className="text-gray-400 group-hover:text-primary transition-colors">{icon}</div>
     <span className="text-xs font-bold text-gray-500 group-hover:text-primary text-center leading-tight">{label}</span>
   </button>
