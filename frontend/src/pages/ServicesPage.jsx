@@ -67,7 +67,7 @@ const allServices = [
 
 const ServicesPage = () => {
   return (
-    <div className="relative min-h-screen bg-white">
+    <div className="relative min-h-screen bg-white py-10">
       {/* Background Decor - Fixed for smooth scrolling */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]"></div>

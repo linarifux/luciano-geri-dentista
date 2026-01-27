@@ -27,7 +27,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center bg-secondary/10 px-4">
+    <div className="min-h-[85vh] flex items-center justify-center bg-secondary/10 px-4 py-20">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
