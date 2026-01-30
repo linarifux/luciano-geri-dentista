@@ -25,14 +25,18 @@ import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import SingleBlog from "./pages/SingleBlog";
+import PricingPage from "./pages/PricingPage";
 
 // Admin Pages
 import Dashboard from "./pages/admin/Dashboard";
-import DoctorDashboard from "./pages/admin/DoctorDashboard"; // IMPORTED NEW PAGE
 import PatientCRM from "./pages/admin/PatientCRM";
 import ServiceManagement from "./pages/admin/ServiceManagement";
 import Appointments from "./pages/admin/Appointments";
 import AdminBlogs from "./pages/admin/AdminBlogs";
+import PatientClinicalRecord from "./pages/admin/PatientClinicalRecord";
+import StaffManagement from "./pages/admin/StaffManagement";
+import InvoiceGenerator from "./pages/admin/InvoiceGenerator";
+import PostOpGenerator from "./pages/admin/PostOpGenerator";
 
 // --- Utility: Reset Scroll on Route Change ---
 const ScrollToTopOnNavigate = () => {
@@ -51,9 +55,6 @@ const PublicLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      {/* If Home: No padding (content sits behind transparent navbar)
-         If Other: Add padding to push content down below fixed navbar 
-      */}
       <main className={`grow ${isHome ? "lg:pt-48" : "pt-24 lg:pt-32"}`}>
         <Outlet />
       </main>
@@ -65,7 +66,6 @@ const PublicLayout = () => {
 function App() {
   return (
     <Router>
-      {/* Toast Notifications */}
       <Toaster
         position="top-center"
         reverseOrder={false}
@@ -94,8 +94,8 @@ function App() {
           <Route path="/servizi" element={<ServicesPage />} />
           <Route path="/studio" element={<StudioPage />} />
           <Route path="/chi-siamo" element={<About />} />
+          <Route path="/prezzi" element={<PricingPage />} />
           
-          {/* Blog Routes */}
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<SingleBlog />} />
 
@@ -106,11 +106,19 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/dashboard" element={<Dashboard />} />
-            <Route path="/admin/doctor-dashboard" element={<DoctorDashboard />} /> {/* NEW ROUTE */}
             <Route path="/admin/appointments" element={<Appointments />} />
+            
+            {/* Patient Management Routes */}
             <Route path="/admin/patients" element={<PatientCRM />} />
+            {/* Use the same component for creating new or viewing existing */}
+            <Route path="/admin/clinical-record" element={<PatientClinicalRecord />} /> 
+            <Route path="/admin/patients/:id" element={<PatientClinicalRecord />} />
+            <Route path="/admin/invoices" element={<InvoiceGenerator />} />
+            <Route path="/admin/post-op" element={<PostOpGenerator />} />
+
             <Route path="/admin/services" element={<ServiceManagement />} />
             <Route path="/admin/blogs" element={<AdminBlogs />} />
+            <Route path="/admin/staff" element={<StaffManagement />} />
           </Route>
         </Route>
       </Routes>

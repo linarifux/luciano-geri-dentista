@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/slices/authSlice';
 import { 
   LayoutDashboard, 
@@ -9,26 +9,46 @@ import {
   LogOut,
   ChevronRight,
   FileText,
-  X // Added Close icon
+  X,
+  UserCog,
+  Receipt, // Imported for Invoices
+  HeartPulse
 } from 'lucide-react';
 
-// Now accepts props for mobile state management
 const AdminSidebar = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth); 
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+        await dispatch(logout()).unwrap();
+        navigate('/login');
+    } catch (err) {
+        console.error("Logout failed", err);
+        navigate('/login'); 
+    }
   };
 
+  // Base Menu Items
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/admin/dashboard' },
     { name: 'Appuntamenti', icon: <CalendarCheck size={20} />, path: '/admin/appointments' },
     { name: 'Pazienti', icon: <Users size={20} />, path: '/admin/patients' },
     { name: 'Prestazioni', icon: <Stethoscope size={20} />, path: '/admin/services' },
+    { name: 'Fatture', icon: <Receipt size={20} />, path: '/admin/invoices' }, // NEW LINK
     { name: 'Blog & News', icon: <FileText size={20} />, path: '/admin/blogs' },
+    { name: 'Post-Cura', icon: <HeartPulse size={20} />, path: '/admin/post-op' },
   ];
+
+  // Condition: Only show "Gestione Team" to Admins
+  if (userInfo && userInfo.role === 'admin') {
+    menuItems.push({ 
+      name: 'Gestione Team', 
+      icon: <UserCog size={20} />, 
+      path: '/admin/staff' 
+    });
+  }
 
   return (
     <>
@@ -71,7 +91,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
             <NavLink
               key={item.name}
               to={item.path}
-              onClick={onClose} // Close sidebar on mobile when link is clicked
+              onClick={onClose}
               className={({ isActive }) => `
                 flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group
                 ${isActive 

@@ -4,6 +4,7 @@ import appointmentReducer from './slices/appointmentSlice';
 import patientReducer from './slices/patientSlice';
 import serviceReducer from './slices/serviceSlice';
 import blogReducer from './slices/blogSlice';
+import userReducer from './slices/userSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     appointments: appointmentReducer,
     patients: patientReducer,
     services: serviceReducer,
-    blogs: blogReducer
+    blogs: blogReducer,
+    users: userReducer,
   },
 });

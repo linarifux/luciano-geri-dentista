@@ -9,6 +9,7 @@ import FounderSection from "../components/home/FounderSection";
 import CaseStudies from "../components/home/CaseStudies";
 import InstagramFeed from "../components/home/InstagramFeed";
 import FAQ from "../components/home/FAQ";
+import SymptomChecker from "../components/home/SymptomChecker"; // Imported
 import { Calendar } from "lucide-react";
 
 const HomePage = () => {
@@ -21,6 +22,25 @@ const HomePage = () => {
       <Hero />
       <InfoSection />
       <ServicesGrid />
+
+      {/* --- SYMPTOM CHECKER (Virtual Triage) --- */}
+      <section className="py-24 bg-white relative overflow-hidden">
+        {/* Background Decor */}
+        <div className="absolute top-0 left-0 w-full h-full bg-primary/5 -skew-y-3 origin-top-left scale-110 z-0"></div>
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-black text-dark mb-4">
+              Non sai quale trattamento prenotare?
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-lg">
+              Usa il nostro assistente virtuale per individuare i sintomi e trovare la soluzione più adatta a te in pochi secondi.
+            </p>
+          </div>
+          
+          <SymptomChecker />
+        </div>
+      </section>
 
       {/* --- BOOKING SECTION WRAPPER --- */}
       <section className="py-24 relative overflow-hidden">

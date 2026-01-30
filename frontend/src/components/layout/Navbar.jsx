@@ -111,7 +111,8 @@ const Navbar = () => {
               <NavLink to="/">Home</NavLink>
               <NavLink to="/chi-siamo">Chi Siamo</NavLink>
               <NavLink to="/servizi">Prestazioni</NavLink>
-              <NavLink to="/blog">News</NavLink> {/* ADDED BLOG LINK */}
+              <NavLink to="/prezzi">Prezzi</NavLink> {/* NEW LINK */}
+              <NavLink to="/blog">News</NavLink>
               <NavLink to="/studio">Lo Studio</NavLink>
               <NavLink to="/login" className="italic text-gray-400">Area Staff</NavLink>
               
@@ -141,7 +142,8 @@ const Navbar = () => {
               <MobileNavLink to="/" onClick={() => setIsOpen(false)}>Home</MobileNavLink>
               <MobileNavLink to="/chi-siamo" onClick={() => setIsOpen(false)}>Chi Siamo</MobileNavLink>
               <MobileNavLink to="/servizi" onClick={() => setIsOpen(false)}>Prestazioni</MobileNavLink>
-              <MobileNavLink to="/blog" onClick={() => setIsOpen(false)}>News</MobileNavLink> {/* ADDED BLOG LINK */}
+              <MobileNavLink to="/prezzi" onClick={() => setIsOpen(false)}>Prezzi & Info</MobileNavLink> {/* NEW LINK */}
+              <MobileNavLink to="/blog" onClick={() => setIsOpen(false)}>News</MobileNavLink>
               <MobileNavLink to="/studio" onClick={() => setIsOpen(false)}>Lo Studio</MobileNavLink>
               <MobileNavLink to="/login" onClick={() => setIsOpen(false)}>Area Staff</MobileNavLink>
               

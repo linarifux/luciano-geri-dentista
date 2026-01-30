@@ -6,14 +6,18 @@ const cases = [
   {
     title: "Riabilitazione Estetica",
     desc: "Faccette in ceramica su incisivi superiori per correggere diastema e discromie.",
-    before: "https://images.unsplash.com/photo-1609840114035-1c99d592426c?auto=format&fit=crop&q=80&w=800", // Placeholder for 'Bad' teeth
-    after: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=800"   // Placeholder for 'Good' smile
+    // Before: Close up, natural/slightly yellow tone
+    before: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&q=80&w=800",
+    // After: Ultra bright, perfect white smile
+    after: "https://images.unsplash.com/photo-1606811841689-230391b42b94?auto=format&fit=crop&q=80&w=800"
   },
   {
     title: "Sbiancamento & Allineamento",
     desc: "Trattamento combinato con allineatori invisibili e sbiancamento LED.",
-    before: "https://images.unsplash.com/photo-1570515668260-2a5b0f032b1d?auto=format&fit=crop&q=80&w=800&grayscale",
-    after: "https://images.unsplash.com/photo-1570515668260-2a5b0f032b1d?auto=format&fit=crop&q=80&w=800"
+    // Before: Natural smile, slightly off-center or natural color
+    before: "https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&q=80&w=800",
+    // After: Straight, bright smile
+    after: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=800"
   }
 ];
 
@@ -70,6 +74,10 @@ const ComparisonCard = ({ item }) => {
         ref={containerRef}
         className="relative h-[400px] w-full rounded-[2.5rem] overflow-hidden cursor-ew-resize shadow-2xl select-none"
         onClick={handleClick}
+        onMouseMove={(e) => {
+          // Optional: Allow drag on mouse move if mouse is down (simple version)
+          if (e.buttons === 1) handleClick(e);
+        }}
       >
         {/* AFTER Image (Background) */}
         <img 
@@ -90,8 +98,8 @@ const ComparisonCard = ({ item }) => {
           <img 
             src={item.before} 
             alt="Before" 
-            className="absolute inset-0 w-full h-full object-cover max-w-none" // max-w-none keeps image static while container shrinks
-            style={{ width: containerRef.current?.offsetWidth }} // Keep internal image full width
+            className="absolute inset-0 w-full h-full object-cover max-w-none" 
+            style={{ width: containerRef.current ? containerRef.current.offsetWidth : '100%' }} 
             draggable="false"
           />
           {/* Overlay to darken 'Before' slightly for dramatic effect */}
@@ -106,7 +114,7 @@ const ComparisonCard = ({ item }) => {
           className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize z-20 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
           style={{ left: `${sliderPosition}%` }}
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-xl flex items-center justify-center text-primary">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-xl flex items-center justify-center text-primary transition-transform hover:scale-110">
             <div className="flex gap-0.5">
                <ChevronLeft size={16} />
                <ChevronRight size={16} />

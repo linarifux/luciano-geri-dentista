@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { fetchPatients } from '../../store/slices/patientSlice';
 import { Search, UserCircle, Phone, Calendar, Mail, Download, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
@@ -7,6 +8,7 @@ import { it } from 'date-fns/locale';
 
 const PatientCRM = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize hook
   const { list, loading } = useSelector((state) => state.patients);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -19,6 +21,11 @@ const PatientCRM = () => {
     (p.email && p.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
     p._id.toString().includes(searchTerm)
   );
+
+  // Navigation Handler
+  const handleOpenRecord = (id) => {
+    navigate(`/admin/patients/${id}`);
+  };
 
   return (
     <div className="animate-in fade-in duration-500 p-4 md:p-8 lg:p-10 min-h-screen">
@@ -72,7 +79,8 @@ const PatientCRM = () => {
           filteredPatients.map((patient) => (
             <div 
               key={patient._id} 
-              className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 hover:shadow-lg hover:border-primary/20 transition-all group relative overflow-hidden"
+              onClick={() => handleOpenRecord(patient._id)} // Make row clickable
+              className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 hover:shadow-lg hover:border-primary/20 transition-all group relative overflow-hidden cursor-pointer"
             >
               {/* Decorative Hover Gradient */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -119,13 +127,22 @@ const PatientCRM = () => {
                   <span className="text-gray-400 uppercase text-[10px] font-bold tracking-widest mb-1.5">Ultimo Appunt.</span>
                   <div className="flex items-center gap-2 text-dark font-bold bg-gray-50 px-3 py-1.5 rounded-lg w-fit">
                     <Calendar size={14} className="text-primary" />
-                    {format(new Date(patient.lastAppointment), 'd MMM yyyy', { locale: it })}
+                    {patient.lastAppointment 
+                      ? format(new Date(patient.lastAppointment), 'd MMM yyyy', { locale: it })
+                      : 'N/A'
+                    }
                   </div>
                 </div>
               </div>
 
               {/* Action Button */}
-              <button className="w-full lg:w-auto relative z-10 bg-dark text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-primary hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 whitespace-nowrap">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenRecord(patient._id);
+                }}
+                className="w-full lg:w-auto relative z-10 bg-dark text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-primary hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 whitespace-nowrap"
+              >
                 Apri Cartella
               </button>
             </div>
