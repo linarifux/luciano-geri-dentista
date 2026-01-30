@@ -8,21 +8,21 @@ const teamMembers = [
     name: "Dr. Sara",
     role: "Direttore Sanitario & Implantologo",
     bio: "Con oltre 20 anni di esperienza, il Dr. Geri è specializzato in chirurgia implantare complessa e riabilitazione orale. La sua filosofia è mettere il paziente al centro di ogni cura.",
-    image: "https://scontent.fdac183-1.fna.fbcdn.net/v/t39.30808-6/472080868_122206340024200892_3626951326407839246_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=cPGDK4dRrssQ7kNvwHKs_pD&_nc_oc=Adm-0nu6cZYr2goCCJI-pc1k32wQ79nscMlcPe2gwbidDOHq0x14V9IWwbD4CumtgWo&_nc_zt=23&_nc_ht=scontent.fdac183-1.fna&_nc_gid=NpEGIO_smU5xiIyKMrEliA&oh=00_AfrVog1TYHpIGzaNkIqlLM4srEwd7tllr8_8soGsYECa2g&oe=69743409" // Replace with real image
+    image: "https://scontent.fcla4-1.fna.fbcdn.net/v/t39.30808-6/472080868_122206340024200892_3626951326407839246_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=lDQO2G9GmI0Q7kNvwF-nSaA&_nc_oc=Adl0qw0fqChOne268tRevHpprp2JxpLEwHfeTymz-ftepBmbPm7dw6IgqAF9a8g8s44&_nc_zt=23&_nc_ht=scontent.fcla4-1.fna&_nc_gid=1UC9kwXEoihhZ4wYY6QIWg&oh=00_AfpPZFBNAk_H-joiq6LQievWBWevYNsNy_bNkZ0I8ZCoMw&oe=6982B489" // Replace with real image
   },
   {
     id: 2,
     name: "Dr. Cecilia Geri",
     role: "Ortodonzia & Pedodonzia",
     bio: "Specialista nel sorriso dei più piccoli e in ortodonzia invisibile. Crede che un bel sorriso nasca dalla prevenzione e dall'educazione fin dalla tenera età.",
-    image: "https://scontent.fdac183-1.fna.fbcdn.net/v/t39.30808-6/472179714_122206345262200892_8918825388269287454_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=l09UF0tzo_0Q7kNvwEAdygj&_nc_oc=AdnK4-dJvdPjifyUCccBoiBHV1M-QsVENURHwBUp1KvthnjNZ7uY0UK6CTdWzNMNTe8&_nc_zt=23&_nc_ht=scontent.fdac183-1.fna&_nc_gid=Dgz3-xzEvyeaTqZihn_Vrw&oh=00_AfrMDlF3PpS6TPgtUfYc-sPeDEPlSIhMnsIAAPD_DXIilw&oe=697439E7" // Replace with real image
+    image: "https://scontent.fcla6-1.fna.fbcdn.net/v/t39.30808-6/472179714_122206345262200892_8918825388269287454_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=qfiBHnKg0ZIQ7kNvwH_uEWF&_nc_oc=AdlN-MJCjeF7Cocoqz2qxCkYZ7U8PntmPj0Yu6X4Ctn-QK-R0ddLMcpIMz6HfN5y4io&_nc_zt=23&_nc_ht=scontent.fcla6-1.fna&_nc_gid=0bYLe1be8GJkRQQfL3EfQQ&oh=00_AfolKuEvZa7AyWVI-xtlvqS4tX2MubnG9x3QOYhfC5mTUA&oe=6982BA67" // Replace with real image
   },
   {
     id: 3,
     name: "Dr. Rosselli Del Turco Riccardo",
     role: "Igiene & Prevenzione",
     bio: "Appassionato di salute gengivale e prevenzione. Marco vi guiderà nel mantenimento perfetto della vostra salute orale con tecniche all'avanguardia.",
-    image: "https://scontent.fdac183-1.fna.fbcdn.net/v/t39.30808-6/472157795_122206348670200892_5342011876812398404_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=rWjMwSqxczUQ7kNvwGqndxz&_nc_oc=Adm3nAaGwhVYnU5UzL4qMufjiTEUhMhDLV6aSZ2l0lKjuQyeFL3qwrD831RUfKbSmos&_nc_zt=23&_nc_ht=scontent.fdac183-1.fna&_nc_gid=rqJgd2BuFyLwM3Bf8Qlu-A&oh=00_AfpleHwBI21VyCnLy41SegSfuBEC3LBQ91_W0PUFzjK5dQ&oe=6974529E" // Replace with real image
+    image: "https://scontent.fcla6-1.fna.fbcdn.net/v/t39.30808-6/472157795_122206348670200892_5342011876812398404_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=s708W3bp_IwQ7kNvwGvr2fW&_nc_oc=AdmpEVcCqBqyiRgOSCbolPFDFcEQe9i2-IdPXDgoS6gnWijwxW-hmn-sQD4kE3N84Y8&_nc_zt=23&_nc_ht=scontent.fcla6-1.fna&_nc_gid=gAXRGhF415a-uyj0eUqj4g&oh=00_AfrLeGslj3XgGrv7lWa87d4A_PCMtS4IsUSGFbWZ6N4Wmw&oe=6982D31E" // Replace with real image
   },
 ];
 
@@ -101,7 +101,7 @@ const About = () => {
         >
           {/* Replace this URL with your actual TEAM GROUP PHOTO */}
           <img 
-            src="https://scontent.fdac183-1.fna.fbcdn.net/v/t39.30808-6/471764758_122205232628200892_1725519671566013830_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_ohc=lb_mOwusFEoQ7kNvwFw6FXZ&_nc_oc=Adm6nDjgKLeMrcYrHJr9RauciwRahrQuW73QRnM4Psm7v58Awe2pXzACWM_bxVyPZkM&_nc_zt=23&_nc_ht=scontent.fdac183-1.fna&_nc_gid=kM9NE6VVHHHvWMNWN-vlRg&oh=00_Afq_007Rh0-kM5a76r73DwcV-lml1itFwUAoaCh-5fOpYg&oe=69744135" 
+            src="https://scontent.fcla4-1.fna.fbcdn.net/v/t39.30808-6/471452108_122205232208200892_7748679190704605629_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=q4h0Fyyk2zIQ7kNvwFXEiko&_nc_oc=AdnxSeZq9zkY05e4TcDnVOT7MP90IX92V_hH5Zkv7ugMPUc-nUtPnU1G4upNlYkXgVE&_nc_zt=23&_nc_ht=scontent.fcla4-1.fna&_nc_gid=xPExfWHMD4yzion6U42F7Q&oh=00_AfpxnT8BPKpnB-mV8D_nWYQBmPv6PboSpMTtsT9poZuoHg&oe=6982C852" 
             alt="Team Studio Geri" 
             className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-700 ease-in-out scale-105 group-hover:scale-100"
           />
