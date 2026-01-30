@@ -37,6 +37,7 @@ import PatientClinicalRecord from "./pages/admin/PatientClinicalRecord";
 import StaffManagement from "./pages/admin/StaffManagement";
 import InvoiceGenerator from "./pages/admin/InvoiceGenerator";
 import PostOpGenerator from "./pages/admin/PostOpGenerator";
+import SmileGallery from "./pages/SmileGallery";
 
 // --- Utility: Reset Scroll on Route Change ---
 const ScrollToTopOnNavigate = () => {
@@ -95,6 +96,7 @@ function App() {
           <Route path="/studio" element={<StudioPage />} />
           <Route path="/chi-siamo" element={<About />} />
           <Route path="/prezzi" element={<PricingPage />} />
+          <Route path="/sorrisi" element={<SmileGallery />} />
           
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<SingleBlog />} />

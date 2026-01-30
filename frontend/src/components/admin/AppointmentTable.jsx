@@ -36,11 +36,15 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
     }).sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
-      if (dateA - dateB !== 0) return dateA - dateB;
+      
+      // SORT CHANGE: Date Descending (Latest date first)
+      if (dateB - dateA !== 0) return dateB - dateA;
 
       const timeA = a.time || ''; 
       const timeB = b.time || '';
-      return timeA.localeCompare(timeB);
+      
+      // SORT CHANGE: Time Descending (Latest time first)
+      return timeB.localeCompare(timeA);
     });
   }, [itemsToUse, filter]);
 
@@ -109,34 +113,34 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
 
               {/* Body: Details */}
               <div className="bg-gray-50/50 rounded-xl p-3 grid grid-cols-2 gap-3">
-                 <div>
+                  <div>
                     <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Data</span>
                     <div className="text-sm font-bold text-dark flex items-center gap-1.5 mt-0.5">
                        <Calendar size={14} className="text-primary"/> 
                        {appt.date ? format(new Date(appt.date), 'd MMM yyyy', { locale: it }) : 'N/A'}
                     </div>
-                 </div>
-                 <div>
+                  </div>
+                  <div>
                     <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Ora</span>
                     <div className="text-sm font-bold text-dark flex items-center gap-1.5 mt-0.5">
                        <Clock size={14} className="text-primary"/> 
                        {appt.time || '--:--'}
                     </div>
-                 </div>
-                 <div className="col-span-2 border-t border-gray-200 pt-2 mt-1">
+                  </div>
+                  <div className="col-span-2 border-t border-gray-200 pt-2 mt-1">
                     <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Trattamento</span>
                     <div className="text-sm font-semibold text-gray-700 mt-0.5 flex justify-between items-center">
                        {appt.service}
                     </div>
-                 </div>
-                 {/* Doctor Row for Mobile */}
-                 <div className="col-span-2">
+                  </div>
+                  {/* Doctor Row for Mobile */}
+                  <div className="col-span-2">
                     <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Dottore</span>
                     <div className="text-sm font-semibold text-gray-700 mt-0.5 flex items-center gap-1.5">
                        <Stethoscope size={14} className="text-primary"/>
                        {appt.doctor || <span className="text-gray-400 italic">Non assegnato</span>}
                     </div>
-                 </div>
+                  </div>
               </div>
 
               {/* Footer: Actions */}
@@ -166,7 +170,7 @@ const AppointmentTable = ({ filter = 'all', data, onEdit, onDelete }) => {
             <tr>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Paziente</th>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Trattamento</th>
-              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Dottore</th> {/* NEW COLUMN */}
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Dottore</th>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Data & Ora</th>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em]">Stato</th>
               <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.1em] text-right">Opzioni</th>

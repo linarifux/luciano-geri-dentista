@@ -6,17 +6,17 @@ const cases = [
   {
     title: "Riabilitazione Estetica",
     desc: "Faccette in ceramica su incisivi superiori per correggere diastema e discromie.",
-    // Before: Close up, natural/slightly yellow tone
+    // Before: Natural teeth, slightly yellow/imperfect
     before: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&q=80&w=800",
-    // After: Ultra bright, perfect white smile
+    // After: Perfect bright smile
     after: "https://images.unsplash.com/photo-1606811841689-230391b42b94?auto=format&fit=crop&q=80&w=800"
   },
   {
     title: "Sbiancamento & Allineamento",
     desc: "Trattamento combinato con allineatori invisibili e sbiancamento LED.",
-    // Before: Natural smile, slightly off-center or natural color
+    // Before: Slight misalignment
     before: "https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&q=80&w=800",
-    // After: Straight, bright smile
+    // After: Straight white smile
     after: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=800"
   }
 ];
@@ -52,14 +52,6 @@ const ComparisonCard = ({ item }) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const containerRef = useRef(null);
 
-  const handleDrag = (event, info) => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const newPos = ((info.point.x - rect.left) / rect.width) * 100;
-      setSliderPosition(Math.min(100, Math.max(0, newPos)));
-    }
-  };
-
   // Fallback for click interaction
   const handleClick = (e) => {
     const rect = containerRef.current.getBoundingClientRect();
@@ -75,7 +67,7 @@ const ComparisonCard = ({ item }) => {
         className="relative h-[400px] w-full rounded-[2.5rem] overflow-hidden cursor-ew-resize shadow-2xl select-none"
         onClick={handleClick}
         onMouseMove={(e) => {
-          // Optional: Allow drag on mouse move if mouse is down (simple version)
+          // Allow drag on mouse move if mouse is down
           if (e.buttons === 1) handleClick(e);
         }}
       >

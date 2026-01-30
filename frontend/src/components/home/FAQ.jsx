@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 const faqs = [
   {
@@ -61,20 +61,27 @@ const FAQ = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className={`bg-white rounded-2xl border transition-all duration-300 ${
-                openIndex === index ? 'border-primary/30 shadow-lg shadow-primary/5' : 'border-gray-100 shadow-sm hover:border-primary/20'
+              className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden ${
+                openIndex === index 
+                  ? 'border-primary/30 shadow-lg shadow-primary/5 ring-1 ring-primary/10' 
+                  : 'border-gray-100 shadow-sm hover:border-primary/20'
               }`}
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left gap-4"
+                className="w-full px-6 py-6 flex items-center justify-between text-left gap-4 group"
               >
-                <span className={`font-bold text-lg transition-colors ${openIndex === index ? 'text-primary' : 'text-dark'}`}>
+                <span className={`font-bold text-lg transition-colors duration-300 ${openIndex === index ? 'text-primary' : 'text-dark group-hover:text-primary'}`}>
                   {faq.question}
                 </span>
-                <span className={`p-2 rounded-full transition-colors ${openIndex === index ? 'bg-primary text-white' : 'bg-gray-50 text-gray-400'}`}>
-                  {openIndex === index ? <Minus size={18} /> : <Plus size={18} />}
-                </span>
+                
+                {/* Animated Icon Container */}
+                <div className={`
+                   flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300
+                   ${openIndex === index ? 'bg-primary text-white rotate-45' : 'bg-gray-50 text-gray-400 group-hover:bg-primary/10 group-hover:text-primary'}
+                `}>
+                  <Plus size={18} />
+                </div>
               </button>
 
               <AnimatePresence>
@@ -84,9 +91,8 @@ const FAQ = () => {
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden"
                   >
-                    <div className="px-6 pb-6 text-gray-500 leading-relaxed border-t border-gray-50 pt-4 mt-2">
+                    <div className="px-6 pb-6 text-gray-500 leading-relaxed text-base border-t border-dashed border-gray-100 pt-4 mx-6 mt-2">
                       {faq.answer}
                     </div>
                   </motion.div>

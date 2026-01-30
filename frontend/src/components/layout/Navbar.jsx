@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, NavLink as RouterNavLink } from 'react-router-dom'; // Import RouterNavLink
 import { 
   Menu, X, Calendar, Phone, Mail, MapPin, 
   Facebook, Instagram, Clock 
@@ -111,7 +111,8 @@ const Navbar = () => {
               <NavLink to="/">Home</NavLink>
               <NavLink to="/chi-siamo">Chi Siamo</NavLink>
               <NavLink to="/servizi">Prestazioni</NavLink>
-              <NavLink to="/prezzi">Prezzi</NavLink> {/* NEW LINK */}
+              <NavLink to="/sorrisi">Casi Clinici</NavLink>
+              <NavLink to="/prezzi">Prezzi</NavLink>
               <NavLink to="/blog">News</NavLink>
               <NavLink to="/studio">Lo Studio</NavLink>
               <NavLink to="/login" className="italic text-gray-400">Area Staff</NavLink>
@@ -142,7 +143,8 @@ const Navbar = () => {
               <MobileNavLink to="/" onClick={() => setIsOpen(false)}>Home</MobileNavLink>
               <MobileNavLink to="/chi-siamo" onClick={() => setIsOpen(false)}>Chi Siamo</MobileNavLink>
               <MobileNavLink to="/servizi" onClick={() => setIsOpen(false)}>Prestazioni</MobileNavLink>
-              <MobileNavLink to="/prezzi" onClick={() => setIsOpen(false)}>Prezzi & Info</MobileNavLink> {/* NEW LINK */}
+              <MobileNavLink to="/sorrisi" onClick={() => setIsOpen(false)}>Casi Clinici</MobileNavLink>
+              <MobileNavLink to="/prezzi" onClick={() => setIsOpen(false)}>Prezzi & Info</MobileNavLink>
               <MobileNavLink to="/blog" onClick={() => setIsOpen(false)}>News</MobileNavLink>
               <MobileNavLink to="/studio" onClick={() => setIsOpen(false)}>Lo Studio</MobileNavLink>
               <MobileNavLink to="/login" onClick={() => setIsOpen(false)}>Area Staff</MobileNavLink>
@@ -171,24 +173,42 @@ const Navbar = () => {
   );
 };
 
+// --- UPDATED NAVLINK COMPONENT ---
+// Uses React Router's `NavLink` to handle active state automatically
 const NavLink = ({ to, children, className = "" }) => (
-  <Link 
+  <RouterNavLink 
     to={to} 
-    className={`relative group text-gray-500 hover:text-dark transition-colors py-2 ${className}`}
+    className={({ isActive }) => `
+      relative group transition-colors py-2
+      ${isActive ? 'text-primary font-bold' : 'text-gray-500 hover:text-dark'}
+      ${className}
+    `}
   >
-    {children}
-    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-  </Link>
+    {({ isActive }) => (
+      <>
+        {children}
+        {/* Animated Underline: Always visible if active, or on hover */}
+        <span 
+          className={`absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300
+            ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}
+          `}
+        ></span>
+      </>
+    )}
+  </RouterNavLink>
 );
 
 const MobileNavLink = ({ to, onClick, children }) => (
-  <Link 
+  <RouterNavLink 
     to={to} 
     onClick={onClick} 
-    className="text-xl font-bold text-dark hover:text-primary transition-colors"
+    className={({ isActive }) => `
+      text-xl font-bold transition-colors
+      ${isActive ? 'text-primary' : 'text-dark hover:text-primary'}
+    `}
   >
     {children}
-  </Link>
+  </RouterNavLink>
 );
 
 export default Navbar;

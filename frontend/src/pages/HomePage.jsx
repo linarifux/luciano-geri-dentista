@@ -10,7 +10,8 @@ import CaseStudies from "../components/home/CaseStudies";
 import InstagramFeed from "../components/home/InstagramFeed";
 import FAQ from "../components/home/FAQ";
 import SymptomChecker from "../components/home/SymptomChecker"; // Imported
-import { Calendar } from "lucide-react";
+import { Calendar, Activity } from "lucide-react";
+import BrandMarquee from "../components/home/BrandMarquee";
 
 const HomePage = () => {
   return (
@@ -22,25 +23,74 @@ const HomePage = () => {
       <Hero />
       <InfoSection />
       <ServicesGrid />
+      <BrandMarquee />
 
-      {/* --- SYMPTOM CHECKER (Virtual Triage) --- */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        {/* Background Decor */}
-        <div className="absolute top-0 left-0 w-full h-full bg-primary/5 -skew-y-3 origin-top-left scale-110 z-0"></div>
-        
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black text-dark mb-4">
-              Non sai quale trattamento prenotare?
-            </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-lg">
-              Usa il nostro assistente virtuale per individuare i sintomi e trovare la soluzione più adatta a te in pochi secondi.
-            </p>
-          </div>
-          
-          <SymptomChecker />
-        </div>
-      </section>
+      {/* --- SYMPTOM CHECKER SECTION --- */}
+<section className="py-32 relative overflow-hidden bg-gradient-to-b from-white to-slate-50">
+  
+  {/* Ambient Background Glow */}
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-[120px]" />
+    </div>
+  </div>
+
+  <div className="max-w-4xl mx-auto px-6 relative z-10">
+    
+    {/* Section Header */}
+    <div className="text-center mb-16">
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm text-primary text-xs font-bold uppercase tracking-widest mb-6"
+      >
+        <Activity size={14} className="animate-pulse" /> Virtual Triage
+      </motion.div>
+      
+      <motion.h2 
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1 }}
+        className="text-4xl md:text-5xl font-black text-dark mb-6 leading-tight tracking-tight"
+      >
+        Indeciso sul trattamento? <br />
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+          Chiedi al nostro assistente.
+        </span>
+      </motion.h2>
+      
+      <motion.p 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2 }}
+        className="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed font-light"
+      >
+        Un percorso guidato veloce per identificare i tuoi sintomi e ricevere un consiglio immediato su cosa prenotare.
+      </motion.p>
+    </div>
+    
+    {/* Interactive Tool Wrapper with Depth */}
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.3 }}
+      className="relative"
+    >
+      {/* Glow Effect behind the card */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-white to-secondary/20 rounded-[3rem] blur-xl opacity-50"></div>
+      
+      <div className="relative">
+        <SymptomChecker />
+      </div>
+    </motion.div>
+
+  </div>
+</section>
 
       {/* --- BOOKING SECTION WRAPPER --- */}
       <section className="py-24 relative overflow-hidden">
