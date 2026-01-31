@@ -23,7 +23,9 @@ const Blog = () => {
         </div>
 
         {loading ? (
-          <div className="text-center py-20"><div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full mx-auto"></div></div>
+          <div className="text-center py-20">
+            <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+          </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {items.map((post, i) => (
@@ -32,27 +34,49 @@ const Blog = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-3xl overflow-hidden shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group"
+                className="bg-white rounded-3xl overflow-hidden shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
               >
-                <div className="h-56 overflow-hidden relative">
-                  <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary uppercase tracking-widest">
-                    {post.category}
+                {/* Updated: Link wraps the entire card content.
+                  Added 'block h-full' to ensure it covers the card area.
+                */}
+                <Link to={`/blog/${post._id}`} className="block h-full flex flex-col">
+                  
+                  {/* Image Container */}
+                  <div className="h-56 overflow-hidden relative shrink-0">
+                    <img 
+                      src={post.image} 
+                      alt={post.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    />
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary uppercase tracking-widest">
+                      {post.category}
+                    </div>
                   </div>
-                </div>
-                <div className="p-8">
-                  <div className="flex items-center gap-4 text-xs text-gray-400 mb-4 font-medium uppercase tracking-wider">
-                    <span className="flex items-center gap-1"><Calendar size={12} /> {new Date(post.createdAt).toLocaleDateString()}</span>
-                    <span className="flex items-center gap-1"><Clock size={12} /> {post.readTime}</span>
+
+                  {/* Content Container */}
+                  <div className="p-8 flex flex-col flex-grow">
+                    <div className="flex items-center gap-4 text-xs text-gray-400 mb-4 font-medium uppercase tracking-wider">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={12} /> {new Date(post.createdAt).toLocaleDateString()}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock size={12} /> {post.readTime} min
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-bold text-dark mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                      {post.title}
+                    </h3>
+                    
+                    {/* Spacer to push CTA to bottom if descriptions vary in length */}
+                    <div className="mt-auto pt-6 border-t border-gray-100">
+                      <span className="inline-flex items-center gap-2 text-sm font-black text-dark group-hover:text-primary transition-colors uppercase tracking-widest">
+                        Leggi Articolo <ArrowRight size={16} />
+                      </span>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-dark mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h3>
-                  <div className="h-px w-full bg-gray-100 my-6"></div>
-                  <Link to={`/blog/${post._id}`} className="inline-flex items-center gap-2 text-sm font-black text-dark hover:text-primary transition-colors uppercase tracking-widest">
-                    Leggi Articolo <ArrowRight size={16} />
-                  </Link>
-                </div>
+
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -61,4 +85,5 @@ const Blog = () => {
     </div>
   );
 };
+
 export default Blog;
